@@ -1,0 +1,9 @@
+{% if colaborador_list %}
+    <ul>
+    {% for colaborador in colaborador_list %}
+        <li>{{ colaborador.nome }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Nenhum colaborador cadastrado.</p>
+{% endif %}
