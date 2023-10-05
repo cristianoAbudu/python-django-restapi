@@ -1,4 +1,5 @@
-<form action="salvarColaborador/" method="post">
+<form action="/frontend/salvarColaborador/" method="post">  
+    {% csrf_token %}
     {{ form }}
     <input type="submit" value="OK">
 </form>
@@ -6,9 +7,26 @@
 {% if colaborador_list %}
     <ul>
     {% for colaborador in colaborador_list %}
-       <li>{{ colaborador.nome }}</li>
+       <li>{{ colaborador.nome }} - {{ colaborador.id_chefe }}</li>
     {% endfor %}
     </ul>
 {% else %}
     <p>Nenhum colaborador cadastrado.</p>
 {% endif %}
+
+<form action="/frontend/associaChefe/" method="post">  
+    {% csrf_token %}
+    <label for="chefe">Chefe:</label>
+    <select name="chefe" id="chefe">
+        {% for colaborador in colaborador_list %}
+        <option value="{{ colaborador.id }}">{{ colaborador.nome }}</option>
+        {% endfor %}
+    </select>
+    <label for="subordinado">Subordinado:</label>
+    <select name="subordinado" id="subordinado">
+        {% for colaborador in colaborador_list %}
+        <option value="{{ colaborador.id }}">{{ colaborador.nome }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="OK">
+</form>

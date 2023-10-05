@@ -6,5 +6,6 @@ app_name = "polls"
 urlpatterns = [
     path("", views.index, name="index"),
     path("salvarColaborador/", views.get_name, name="salvarColaborador"),
+    path("associaChefe/", views.associaChefe, name="associaChefe"),
 
 ]

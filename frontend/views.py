@@ -2,27 +2,45 @@ from django.shortcuts import render
 from apis.models import ColaboradorModel
 from django.http import HttpResponseRedirect
 
-from .forms import ColaboradorForm
+from .forms import AssociaChefeForm, ColaboradorForm
 
 def index(request):
     colaborador_list = ColaboradorModel.objects.order_by("nome")
-    context = {"colaborador_list": colaborador_list}
+    form = ColaboradorForm()
+    context = {
+        "colaborador_list": colaborador_list,
+        "form": form,
+    }
     return render(request, "frontend/index.html", context)
 #https://docs.djangoproject.com/en/4.2/topics/forms/
 def get_name(request):
-    # if this is a POST request we need to process the form data
     if request.method == "POST":
-        # create a form instance and populate it with data from the request:
         form = ColaboradorForm(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect("/thanks/")
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
+            model = ColaboradorModel()
+            model.nome = form.cleaned_data['nome']
+            model.senha = form.cleaned_data['senha']
+            model.save()
+    else:   
         form = ColaboradorForm()
+    colaborador_list = ColaboradorModel.objects.order_by("nome")
+    context = {"colaborador_list": colaborador_list}
+    return index(request)
 
-    return render(request, "name.html", {"form": form})
+def associaChefe(request):
+    if request.method == "POST":
+        form = AssociaChefeForm(request.POST)
+        if form.is_valid():
+
+            chefe = ColaboradorModel.objects.get(id=form.data['chefe'])
+            subordinado = ColaboradorModel.objects.get(id=form.data['subordinado'])
+
+            if(chefe.id != subordinado.id) :
+                subordinado.id_chefe = chefe.id
+                subordinado.save()
+            
+    else:   
+        form = ColaboradorForm()
+    colaborador_list = ColaboradorModel.objects.order_by("nome")
+    context = {"colaborador_list": colaborador_list}
+    return index(request)
